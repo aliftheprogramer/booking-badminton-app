@@ -1,0 +1,261 @@
+import 'package:flutter/material.dart';
+import '../../../auth/services/auth_service.dart';
+import '../../../auth/models/auth_models.dart';
+import '../../../auth/login/login.dart';
+
+class UserProfilePage extends StatefulWidget {
+  const UserProfilePage({super.key});
+
+  @override
+  State<UserProfilePage> createState() => _UserProfilePageState();
+}
+
+class _UserProfilePageState extends State<UserProfilePage> {
+  final AuthService _authService = AuthService();
+  AuthResponse? _userData;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      final userData = await _authService.getUserData();
+      setState(() {
+        _userData = userData;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _logout() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Konfirmasi Logout'),
+          content: const Text('Apakah Anda yakin ingin keluar dari aplikasi?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Batal'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close dialog
+                await _authService.logout();
+                if (mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    (route) => false,
+                  );
+                }
+              },
+              child: const Text(
+                'Logout',
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white,
+      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _userData == null
+              ? const Center(
+                  child: Text(
+                    'Gagal memuat data profile',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                )
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      // Profile Header
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 50,
+                                backgroundColor: Colors.green[100],
+                                child: Text(
+                                  _userData!.nama.isNotEmpty 
+                                      ? _userData!.nama[0].toUpperCase()
+                                      : 'U',
+                                  style: TextStyle(
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green[700],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                _userData!.nama,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Text(
+                                  _userData!.role.toUpperCase(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Profile Information
+                      Card(
+                        child: Column(
+                          children: [
+                            _buildProfileTile(
+                              icon: Icons.person,
+                              title: 'Nama Lengkap',
+                              subtitle: _userData!.nama,
+                            ),
+                            const Divider(height: 1),
+                            _buildProfileTile(
+                              icon: Icons.phone,
+                              title: 'Nomor HP',
+                              subtitle: _userData!.noHp,
+                            ),
+                            const Divider(height: 1),
+                            _buildProfileTile(
+                              icon: Icons.verified_user,
+                              title: 'Role',
+                              subtitle: _userData!.role,
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // App Information
+                      Card(
+                        child: Column(
+                          children: [
+                            _buildProfileTile(
+                              icon: Icons.info,
+                              title: 'Tentang Aplikasi',
+                              subtitle: 'Booking Badminton v1.0.0',
+                              showTrailing: false,
+                            ),
+                            const Divider(height: 1),
+                            _buildProfileTile(
+                              icon: Icons.help,
+                              title: 'Bantuan',
+                              subtitle: 'Hubungi customer service',
+                              onTap: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Fitur bantuan akan segera hadir'),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+
+                      // Logout Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _logout,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.logout),
+                              SizedBox(width: 8),
+                              Text(
+                                'Logout',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+    );
+  }
+
+  Widget _buildProfileTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    VoidCallback? onTap,
+    bool showTrailing = true,
+  }) {
+    return ListTile(
+      leading: Icon(
+        icon,
+        color: Colors.green[700],
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      subtitle: Text(subtitle),
+      trailing: showTrailing && onTap != null
+          ? const Icon(Icons.chevron_right)
+          : null,
+      onTap: onTap,
+    );
+  }
+}
