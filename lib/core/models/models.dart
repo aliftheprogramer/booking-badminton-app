@@ -165,7 +165,11 @@ class HistoryItem {
     return HistoryItem(
       id: json['_id'],
       booking: json['booking'] != null ? HistoryBooking.fromJson(json['booking'] as Map<String, dynamic>) : null,
-      user: json['user'] != null ? HistoryUser.fromJson(json['user'] as Map<String, dynamic>) : null,
+      user: json['user'] == null
+          ? null
+          : (json['user'] is String
+              ? HistoryUser(id: json['user'] as String)
+              : HistoryUser.fromJson(json['user'] as Map<String, dynamic>)),
       action: json['action'],
       message: json['message'],
       meta: json['meta'] != null ? HistoryMeta.fromJson(json['meta'] as Map<String, dynamic>) : null,

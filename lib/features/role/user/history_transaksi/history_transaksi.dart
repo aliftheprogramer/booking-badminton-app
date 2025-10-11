@@ -12,27 +12,26 @@ class UserHistoryTransaksiPage extends StatefulWidget {
 
 class _UserHistoryTransaksiPageState extends State<UserHistoryTransaksiPage> {
   final BookingService _bookingService = BookingService();
-  List<Booking> _bookingList = [];
+  List<HistoryItem> _items = [];
   bool _isLoading = true;
   String _error = '';
 
   @override
   void initState() {
     super.initState();
-    _loadBookingHistory();
+    _loadHistory();
   }
 
-  Future<void> _loadBookingHistory() async {
+  Future<void> _loadHistory() async {
     try {
       setState(() {
         _isLoading = true;
         _error = '';
       });
 
-      final bookingList = await _bookingService.getUserBookings();
-      
+      final items = await _bookingService.getMyHistoryItems();
       setState(() {
-        _bookingList = bookingList;
+        _items = items;
         _isLoading = false;
       });
     } catch (e) {
@@ -44,7 +43,7 @@ class _UserHistoryTransaksiPageState extends State<UserHistoryTransaksiPage> {
   }
 
   Future<void> _refreshData() async {
-    await _loadBookingHistory();
+    await _loadHistory();
   }
 
   String _formatRupiah(int amount) {
@@ -103,13 +102,13 @@ class _UserHistoryTransaksiPageState extends State<UserHistoryTransaksiPage> {
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: _loadBookingHistory,
+                          onPressed: _loadHistory,
                           child: const Text('Retry'),
                         ),
                       ],
                     ),
                   )
-                : _bookingList.isEmpty
+                : _items.isEmpty
                     ? const Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -132,21 +131,40 @@ class _UserHistoryTransaksiPageState extends State<UserHistoryTransaksiPage> {
                       )
                     : ListView.builder(
                         padding: const EdgeInsets.all(16),
-                        itemCount: _bookingList.length,
+                        itemCount: _items.length,
                         itemBuilder: (context, index) {
-                          final booking = _bookingList[index];
+                          final item = _items[index];
+                          final booking = item.booking;
+                          final meta = item.meta;
                           return Card(
                             margin: const EdgeInsets.only(bottom: 16),
                             elevation: 2,
                             child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => BookingDetailPage(booking: booking),
-                                  ),
-                                );
-                              },
+                              onTap: booking == null
+                                  ? null
+                                  : () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => BookingDetailPage(
+                                            booking: Booking(
+                                              id: booking.id ?? '',
+                                              kodeBooking: booking.kodeBooking ?? '',
+                                              user: item.user?.id ?? '',
+                                              lapangan: '',
+                                              tanggalBooking: booking.tanggalBooking ?? item.createdAt ?? '',
+                                              jamMulai: booking.jamMulai ?? meta?.jamMulai ?? 0,
+                                              jamSelesai: booking.jamSelesai ?? meta?.jamSelesai ?? 0,
+                                              durasi: ((booking.jamSelesai ?? meta?.jamSelesai ?? 0) - (booking.jamMulai ?? meta?.jamMulai ?? 0)).abs(),
+                                              totalHarga: meta?.totalHarga ?? 0,
+                                              statusPembayaran: item.action ?? '',
+                                              createdAt: item.createdAt ?? '',
+                                              updatedAt: item.createdAt ?? '',
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
                               borderRadius: BorderRadius.circular(4),
                               child: Padding(
                               padding: const EdgeInsets.all(16),
@@ -158,7 +176,7 @@ class _UserHistoryTransaksiPageState extends State<UserHistoryTransaksiPage> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          booking.kodeBooking,
+                                          booking?.kodeBooking ?? '-',
                                           style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -171,11 +189,11 @@ class _UserHistoryTransaksiPageState extends State<UserHistoryTransaksiPage> {
                                           vertical: 4,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: _getStatusColor(booking.statusPembayaran),
+                                          color: _getStatusColor(item.action ?? ''),
                                           borderRadius: BorderRadius.circular(12),
                                         ),
                                         child: Text(
-                                          booking.statusPembayaran.toUpperCase(),
+                                          (item.action ?? '').toUpperCase(),
                                           style: const TextStyle(
                                             color: Colors.white,
                                             fontSize: 10,
@@ -191,30 +209,30 @@ class _UserHistoryTransaksiPageState extends State<UserHistoryTransaksiPage> {
                                   _buildDetailRow(
                                     Icons.calendar_today,
                                     'Tanggal',
-                                    _formatDate(booking.tanggalBooking),
+                                    _formatDate(booking?.tanggalBooking ?? item.createdAt ?? ''),
                                   ),
                                   const SizedBox(height: 8),
                                   _buildDetailRow(
                                     Icons.access_time,
                                     'Waktu',
-                                    '${booking.jamMulai.toString().padLeft(2, '0')}:00 - ${booking.jamSelesai.toString().padLeft(2, '0')}:00',
+                                    '${(booking?.jamMulai ?? meta?.jamMulai ?? 0).toString().padLeft(2, '0')}:00 - ${(booking?.jamSelesai ?? meta?.jamSelesai ?? 0).toString().padLeft(2, '0')}:00',
                                   ),
                                   const SizedBox(height: 8),
                                   _buildDetailRow(
                                     Icons.timer,
                                     'Durasi',
-                                    '${booking.durasi} jam',
+                                    '${((booking?.jamSelesai ?? meta?.jamSelesai ?? 0) - (booking?.jamMulai ?? meta?.jamMulai ?? 0)).abs()} jam',
                                   ),
                                   const SizedBox(height: 8),
                                   _buildDetailRow(
                                     Icons.attach_money,
                                     'Total Harga',
-                                    _formatRupiah(booking.totalHarga),
+                                    _formatRupiah(meta?.totalHarga ?? 0),
                                   ),
                                   const SizedBox(height: 12),
                                   
                                   Text(
-                                    'Dibuat: ${_formatDate(booking.createdAt)}',
+                                    'Dibuat: ${_formatDate(item.createdAt ?? '')}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey[600],

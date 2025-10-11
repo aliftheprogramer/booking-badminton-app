@@ -445,6 +445,44 @@ class BookingService {
     }
   }
 
+  // Returns the raw history items for the current user
+  Future<List<HistoryItem>> getMyHistoryItems() async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) throw Exception('No authentication token found');
+
+      final url = '${ApiUrls.baseUrl}history/my';
+      AppLogger.i.i('[BookingService] GET $url (history items)');
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        try {
+          final decoded = jsonDecode(response.body);
+          if (decoded is List) {
+            return decoded.map<HistoryItem>((e) => HistoryItem.fromJson(e as Map<String, dynamic>)).toList();
+          }
+          throw Exception('Unexpected response format for history/my');
+        } catch (e) {
+          AppLogger.i.e('[BookingService] JSON parse error for history/my (items)', error: e);
+          throw Exception('Invalid response format from history');
+        }
+      } else {
+        final head = response.body.substring(0, response.body.length > 200 ? 200 : response.body.length);
+        AppLogger.i.w('[BookingService] history/my non-200 (status=${response.statusCode}), body(head)=$head');
+        throw Exception('Failed to get booking history (HTTP ${response.statusCode})');
+      }
+    } catch (e) {
+      AppLogger.i.e('[BookingService] exception (getMyHistoryItems)', error: e);
+      if (e is Exception) rethrow; else throw Exception('Network error: ${e.toString()}');
+    }
+  }
+
   Future<List<Booking>> getAllBookings() async {
     try {
       final token = await _authService.getToken();
@@ -485,7 +523,7 @@ class BookingService {
       if (token == null) {
         throw Exception('No authentication token found');
       }
-      final url = '${ApiUrls.baseUrl}history/booking/$bookingId';
+  final url = '${ApiUrls.baseUrl}history/booking/$bookingId';
       AppLogger.i.i('[BookingService] GET $url (auth bearer len=${token.length})');
       final response = await http.get(
         Uri.parse(url),
@@ -523,6 +561,46 @@ class BookingService {
       } else {
         throw Exception('Network error: ${e.toString()}');
       }
+    }
+  }
+
+  // Per user spec: get a single history item by booking id
+  Future<HistoryItem> getHistoryItemByBooking(String bookingId) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) throw Exception('No authentication token found');
+      final url = '${ApiUrls.baseUrl}history/item/$bookingId';
+      AppLogger.i.i('[BookingService] GET $url');
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        try {
+          final decoded = jsonDecode(response.body);
+          if (decoded is Map<String, dynamic>) {
+            return HistoryItem.fromJson(decoded);
+          } else if (decoded is List && decoded.isNotEmpty) {
+            // Some backends may return list with single item
+            return HistoryItem.fromJson(decoded.first as Map<String, dynamic>);
+          } else {
+            throw Exception('Unexpected response format for history/item/:id');
+          }
+        } catch (e) {
+          AppLogger.i.e('[BookingService] JSON parse error for history/item/:id', error: e);
+          throw Exception('Invalid response format from history item');
+        }
+      } else {
+        final head = response.body.substring(0, response.body.length > 200 ? 200 : response.body.length);
+        AppLogger.i.w('[BookingService] history/item non-200 (status=${response.statusCode}), body(head)=$head');
+        throw Exception('Failed to get history item (HTTP ${response.statusCode})');
+      }
+    } catch (e) {
+      AppLogger.i.e('[BookingService] exception (getHistoryItemByBooking)', error: e);
+      if (e is Exception) rethrow; else throw Exception('Network error: ${e.toString()}');
     }
   }
 
