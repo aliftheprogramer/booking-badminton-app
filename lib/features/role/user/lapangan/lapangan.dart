@@ -148,7 +148,9 @@ class _UserLapanganPageState extends State<UserLapanganPage> {
                                           decoration: BoxDecoration(
                                             color: lapangan.status == 'tersedia'
                                                 ? Colors.green
-                                                : Colors.red,
+                                                : (lapangan.status == 'dalam perbaikan'
+                                                    ? Colors.orange
+                                                    : Colors.red),
                                             borderRadius: BorderRadius.circular(12),
                                           ),
                                           child: Text(
@@ -250,7 +252,11 @@ class _UserLapanganPageState extends State<UserLapanganPage> {
                                           ),
                                         ),
                                         child: Text(
-                                          lapangan.status == 'tersedia' ? 'Booking Sekarang' : 'Tidak Tersedia',
+                                          lapangan.status == 'tersedia'
+                                              ? 'Booking Sekarang'
+                                              : (lapangan.status == 'dalam perbaikan'
+                                                  ? 'Dalam Perbaikan'
+                                                  : 'Tidak Tersedia'),
                                           style: const TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,

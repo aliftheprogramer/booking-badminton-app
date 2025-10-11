@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/models/models.dart';
 import '../../../../core/services/api_service.dart';
 import 'add_edit_lapangan_page.dart';
+import 'detail_lapangan.dart';
 
 class AdminLapanganPage extends StatefulWidget {
   const AdminLapanganPage({super.key});
@@ -61,6 +62,19 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
     
     if (result == true) {
       _loadLapangan(); // Refresh data if lapangan was added
+    }
+  }
+
+  Future<void> _navigateToDetailLapangan(Lapangan lapangan) async {
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailLapanganPage(lapangan: lapangan),
+      ),
+    );
+    
+    if (result == true) {
+      _loadLapangan(); // Refresh data if lapangan was updated/deleted
     }
   }
 
@@ -173,7 +187,7 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
                                     margin: const EdgeInsets.only(bottom: 16),
                                     elevation: 2,
                                     child: InkWell(
-                                      onTap: () => _navigateToEditLapangan(lapangan),
+                                      onTap: () => _navigateToDetailLapangan(lapangan),
                                       borderRadius: BorderRadius.circular(4),
                                       child: Padding(
                                         padding: const EdgeInsets.all(16),
@@ -199,7 +213,9 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
                                                   decoration: BoxDecoration(
                                                     color: lapangan.status == 'tersedia'
                                                         ? Colors.green
-                                                        : Colors.red,
+                                                        : (lapangan.status == 'dalam perbaikan'
+                                                            ? Colors.orange
+                                                            : Colors.red),
                                                     borderRadius: BorderRadius.circular(12),
                                                   ),
                                                   child: Text(
@@ -278,6 +294,35 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
                                                 ),
                                               ),
                                             ],
+                                            const SizedBox(height: 16),
+                                            // Action Buttons
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: OutlinedButton.icon(
+                                                    onPressed: () => _navigateToEditLapangan(lapangan),
+                                                    icon: const Icon(Icons.edit, size: 16),
+                                                    label: const Text('Edit'),
+                                                    style: OutlinedButton.styleFrom(
+                                                      foregroundColor: Colors.blue,
+                                                      side: const BorderSide(color: Colors.blue),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Expanded(
+                                                  child: ElevatedButton.icon(
+                                                    onPressed: () => _navigateToDetailLapangan(lapangan),
+                                                    icon: const Icon(Icons.visibility, size: 16),
+                                                    label: const Text('Detail'),
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Colors.orange,
+                                                      foregroundColor: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ),

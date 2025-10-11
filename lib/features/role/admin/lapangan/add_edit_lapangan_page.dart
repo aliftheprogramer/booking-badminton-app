@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:typed_data';
+import 'package:image_picker/image_picker.dart';
 import '../../../../core/models/models.dart';
 import '../../../../core/services/api_service.dart';
 
@@ -18,6 +20,9 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
   final _hargaController = TextEditingController();
   final _fotoController = TextEditingController();
   final LapanganService _lapanganService = LapanganService();
+  final ImagePicker _picker = ImagePicker();
+  XFile? _pickedImage;
+  Uint8List? _pickedBytes;
   
   String _status = 'tersedia';
   bool _isLoading = false;
@@ -59,24 +64,30 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
     });
 
     try {
-      final fotoList = _fotoController.text.trim().isNotEmpty 
-          ? [_fotoController.text.trim()]
-          : <String>[];
-
-      final request = CreateLapanganRequest(
-        nama: _namaController.text.trim(),
-        deskripsi: _deskripsiController.text.trim(),
-        hargaPerJam: int.parse(_hargaController.text),
-        foto: fotoList,
-        status: _status,
-      );
+      final name = _pickedImage?.name ?? '';
+      final int harga = int.parse(_hargaController.text);
 
       if (_isEditing) {
-        // TODO: Implement update lapangan when backend supports it
-        // await _lapanganService.updateLapangan(widget.lapangan!.id, request);
-        throw Exception('Edit lapangan belum didukung oleh backend');
+        await _lapanganService.updateLapanganFormData(
+          id: widget.lapangan!.id,
+          nama: _namaController.text.trim(),
+          deskripsi: _deskripsiController.text.trim(),
+          hargaPerJam: harga,
+          status: _status,
+          fotoBytes: _pickedBytes, // optional on update
+          filename: name,
+          mimeType: _guessMimeType(name),
+        );
       } else {
-        await _lapanganService.createLapangan(request);
+        await _lapanganService.createLapanganFormData(
+          nama: _namaController.text.trim(),
+          deskripsi: _deskripsiController.text.trim(),
+          hargaPerJam: harga,
+          status: _status,
+          fotoBytes: _pickedBytes,
+          filename: name,
+          mimeType: _guessMimeType(name),
+        );
       }
       
       if (mounted) {
@@ -104,6 +115,33 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
         });
       }
     }
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final XFile? picked = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 85, maxWidth: 1600);
+      if (picked != null) {
+        final bytes = await picked.readAsBytes();
+        setState(() {
+          _pickedImage = picked;
+          _pickedBytes = bytes;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Gagal memilih gambar: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
+  }
+
+  String _guessMimeType(String filename) {
+    final lower = filename.toLowerCase();
+    if (lower.endsWith('.png')) return 'image/png';
+    if (lower.endsWith('.webp')) return 'image/webp';
+    if (lower.endsWith('.heic') || lower.endsWith('.heif')) return 'image/heic';
+    return 'image/jpeg';
   }
 
   @override
@@ -223,23 +261,18 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
               ),
               const SizedBox(height: 16),
 
-              TextFormField(
-                controller: _fotoController,
-                decoration: const InputDecoration(
-                  labelText: 'URL Foto (opsional)',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.image),
-                  hintText: 'https://example.com/foto.jpg',
-                ),
-                validator: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    final uri = Uri.tryParse(value);
-                    if (uri == null || !uri.hasAbsolutePath) {
-                      return 'URL foto tidak valid';
-                    }
-                  }
-                  return null;
-                },
+              // Image picker
+              OutlinedButton.icon(
+                onPressed: _isLoading ? null : _pickImage,
+                icon: const Icon(Icons.photo_library),
+                label: const Text('Pilih Foto dari Galeri'),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _pickedImage != null
+                    ? 'Foto akan diunggah saat menyimpan'
+                    : (_fotoController.text.isNotEmpty ? 'Menggunakan foto yang sudah ada' : 'Belum ada foto'),
+                style: TextStyle(color: Colors.grey[700]),
               ),
               const SizedBox(height: 16),
 
@@ -262,7 +295,17 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
                     ),
                   ),
                   DropdownMenuItem(
-                    value: 'tidak_tersedia',
+                    value: 'dalam perbaikan',
+                    child: Row(
+                      children: [
+                        Icon(Icons.build, color: Colors.orange, size: 20),
+                        SizedBox(width: 8),
+                        Text('Dalam Perbaikan'),
+                      ],
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: 'tidak tersedia',
                     child: Row(
                       children: [
                         Icon(Icons.cancel, color: Colors.red, size: 20),
@@ -310,7 +353,7 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
               ),
 
               // Preview Section
-              if (_fotoController.text.isNotEmpty) ...[
+              if (_pickedBytes != null || _fotoController.text.isNotEmpty) ...[
                 const SizedBox(height: 24),
                 const Text(
                   'Preview Foto:',
@@ -328,32 +371,34 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      _fotoController.text,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[200],
-                          child: const Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.broken_image,
-                                  size: 48,
-                                  color: Colors.grey,
+          child: _pickedBytes != null
+            ? Image.memory(_pickedBytes!, fit: BoxFit.cover)
+                        : Image.network(
+                            _fotoController.text,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                color: Colors.grey[200],
+                                child: const Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.broken_image,
+                                        size: 48,
+                                        color: Colors.grey,
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        'Gagal memuat gambar',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Gagal memuat gambar',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ],
-                            ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
                   ),
                 ),
               ],

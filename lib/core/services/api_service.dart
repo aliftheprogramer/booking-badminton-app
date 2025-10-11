@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'dart:typed_data';
 import '../api_urls.dart';
 import '../models/models.dart';
 import '../../features/auth/services/auth_service.dart';
@@ -7,6 +9,44 @@ import '../logger.dart';
 
 class LapanganService {
   final AuthService _authService = AuthService();
+
+  // Upload image to backend (Cloudinary via backend) using raw bytes
+  // Returns the hosted URL.
+  Future<String> uploadImageBytes(Uint8List bytes, {required String filename, String mimeType = 'image/jpeg'}) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+      final uri = Uri.parse('${ApiUrls.baseUrl}upload');
+      AppLogger.i.i('[LapanganService] UPLOAD $uri (filename=$filename)');
+
+      final request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = 'Bearer $token';
+      request.files.add(http.MultipartFile.fromBytes(
+        'file',
+        bytes,
+        filename: filename,
+        contentType: MediaType.parse(mimeType),
+      ));
+
+      final streamed = await request.send();
+      final response = await http.Response.fromStream(streamed);
+      AppLogger.i.i('[LapanganService] upload status=${response.statusCode}');
+      final body = jsonDecode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final url = body['url'] ?? body['secure_url'] ?? body['data']?['url'];
+        if (url is String && url.isNotEmpty) return url;
+        throw Exception('Upload succeeded but URL not found');
+      } else {
+        AppLogger.i.w('[LapanganService] upload error body=$body');
+        throw Exception(body['message'] ?? 'Failed to upload image');
+      }
+    } catch (e) {
+      AppLogger.i.e('[LapanganService] upload exception', error: e);
+      rethrow;
+    }
+  }
 
   Future<List<Lapangan>> getAllLapangan() async {
     try {
@@ -40,6 +80,125 @@ class LapanganService {
       } else {
         throw Exception('Network error: ${e.toString()}');
       }
+    }
+  }
+
+  // Create Lapangan using multipart/form-data as per backend (Cloudinary inside API)
+  Future<Lapangan> createLapanganFormData({
+    required String nama,
+    required String deskripsi,
+    required int hargaPerJam,
+    required String status,
+    Uint8List? fotoBytes,
+    String? filename,
+    String mimeType = 'image/jpeg',
+  }) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) throw Exception('No authentication token found');
+
+      final uri = Uri.parse('${ApiUrls.baseUrl}lapangan');
+      AppLogger.i.i('[LapanganService] POST (multipart) $uri');
+
+      final request = http.MultipartRequest('POST', uri);
+      request.headers['Authorization'] = 'Bearer $token';
+
+      request.fields['nama'] = nama;
+      request.fields['deskripsi'] = deskripsi;
+      request.fields['status'] = status;
+      request.fields['harga_per_jam'] = hargaPerJam.toString();
+
+      if (fotoBytes != null && fotoBytes.isNotEmpty) {
+        final fname = (filename == null || filename.isEmpty) ? 'foto.jpg' : filename;
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'foto',
+            fotoBytes,
+            filename: fname,
+            contentType: MediaType.parse(mimeType),
+          ),
+        );
+      }
+
+      final streamed = await request.send();
+      final response = await http.Response.fromStream(streamed);
+      AppLogger.i.i('[LapanganService] create multipart status=${response.statusCode}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        try {
+          final data = jsonDecode(response.body);
+          return Lapangan.fromJson(data);
+        } catch (e) {
+          final head = response.body.substring(0, response.body.length > 200 ? 200 : response.body.length);
+          throw Exception('Invalid JSON from create lapangan: $head');
+        }
+      } else {
+        final head = response.body.substring(0, response.body.length > 200 ? 200 : response.body.length);
+        throw Exception('Failed to create lapangan (HTTP ${response.statusCode}): $head');
+      }
+    } catch (e) {
+      AppLogger.i.e('[LapanganService] create multipart exception', error: e);
+      rethrow;
+    }
+  }
+
+  // Update Lapangan using multipart/form-data; foto optional
+  Future<Lapangan> updateLapanganFormData({
+    required String id,
+    required String nama,
+    required String deskripsi,
+    required int hargaPerJam,
+    required String status,
+    Uint8List? fotoBytes,
+    String? filename,
+    String mimeType = 'image/jpeg',
+  }) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) throw Exception('No authentication token found');
+
+      final uri = Uri.parse('${ApiUrls.baseUrl}lapangan/$id');
+      AppLogger.i.i('[LapanganService] PUT (multipart) $uri');
+
+      final request = http.MultipartRequest('PUT', uri);
+      request.headers['Authorization'] = 'Bearer $token';
+
+      request.fields['nama'] = nama;
+      request.fields['deskripsi'] = deskripsi;
+      request.fields['status'] = status;
+      request.fields['harga_per_jam'] = hargaPerJam.toString();
+
+      if (fotoBytes != null && fotoBytes.isNotEmpty) {
+        final fname = (filename == null || filename.isEmpty) ? 'foto.jpg' : filename;
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'foto',
+            fotoBytes,
+            filename: fname,
+            contentType: MediaType.parse(mimeType),
+          ),
+        );
+      }
+
+      final streamed = await request.send();
+      final response = await http.Response.fromStream(streamed);
+      AppLogger.i.i('[LapanganService] update multipart status=${response.statusCode}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        try {
+          final data = jsonDecode(response.body);
+          return Lapangan.fromJson(data);
+        } catch (e) {
+          final head = response.body.substring(0, response.body.length > 200 ? 200 : response.body.length);
+          throw Exception('Invalid JSON from update lapangan: $head');
+        }
+      } else {
+        final head = response.body.substring(0, response.body.length > 200 ? 200 : response.body.length);
+        throw Exception('Failed to update lapangan (HTTP ${response.statusCode}): $head');
+      }
+    } catch (e) {
+      AppLogger.i.e('[LapanganService] update multipart exception', error: e);
+      rethrow;
     }
   }
 
@@ -102,6 +261,72 @@ class LapanganService {
         final errorData = jsonDecode(response.body);
         AppLogger.i.w('[LapanganService] error body=$errorData');
         throw Exception(errorData['message'] ?? 'Failed to create lapangan');
+      }
+    } catch (e) {
+      AppLogger.i.e('[LapanganService] exception', error: e);
+      if (e is Exception) {
+        rethrow;
+      } else {
+        throw Exception('Network error: ${e.toString()}');
+      }
+    }
+  }
+
+  Future<Lapangan> updateLapangan(String id, CreateLapanganRequest request) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+      AppLogger.i.i('[LapanganService] PUT ${ApiUrls.baseUrl}lapangan/$id (auth bearer len=${token.length})');
+      final response = await http.put(
+        Uri.parse('${ApiUrls.baseUrl}lapangan/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(request.toJson()),
+      );
+
+      AppLogger.i.i('[LapanganService] status=${response.statusCode}');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return Lapangan.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        AppLogger.i.w('[LapanganService] error body=$errorData');
+        throw Exception(errorData['message'] ?? 'Failed to update lapangan');
+      }
+    } catch (e) {
+      AppLogger.i.e('[LapanganService] exception', error: e);
+      if (e is Exception) {
+        rethrow;
+      } else {
+        throw Exception('Network error: ${e.toString()}');
+      }
+    }
+  }
+
+  Future<void> deleteLapangan(String id) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+      AppLogger.i.i('[LapanganService] DELETE ${ApiUrls.baseUrl}lapangan/$id (auth bearer len=${token.length})');
+      final response = await http.delete(
+        Uri.parse('${ApiUrls.baseUrl}lapangan/$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      AppLogger.i.i('[LapanganService] status=${response.statusCode}');
+      if (response.statusCode != 200 && response.statusCode != 204) {
+        final errorData = jsonDecode(response.body);
+        AppLogger.i.w('[LapanganService] error body=$errorData');
+        throw Exception(errorData['message'] ?? 'Failed to delete lapangan');
       }
     } catch (e) {
       AppLogger.i.e('[LapanganService] exception', error: e);
