@@ -164,15 +164,19 @@ class HistoryItem {
   factory HistoryItem.fromJson(Map<String, dynamic> json) {
     return HistoryItem(
       id: json['_id'],
-      booking: json['booking'] != null ? HistoryBooking.fromJson(json['booking'] as Map<String, dynamic>) : null,
+      booking: json['booking'] != null
+          ? HistoryBooking.fromJson(json['booking'] as Map<String, dynamic>)
+          : null,
       user: json['user'] == null
           ? null
           : (json['user'] is String
-              ? HistoryUser(id: json['user'] as String)
-              : HistoryUser.fromJson(json['user'] as Map<String, dynamic>)),
+                ? HistoryUser(id: json['user'] as String)
+                : HistoryUser.fromJson(json['user'] as Map<String, dynamic>)),
       action: json['action'],
       message: json['message'],
-      meta: json['meta'] != null ? HistoryMeta.fromJson(json['meta'] as Map<String, dynamic>) : null,
+      meta: json['meta'] != null
+          ? HistoryMeta.fromJson(json['meta'] as Map<String, dynamic>)
+          : null,
       createdAt: json['createdAt'],
     );
   }
@@ -194,12 +198,19 @@ class HistoryBooking {
   });
 
   factory HistoryBooking.fromJson(Map<String, dynamic> json) {
+    int? _toInt(dynamic v) {
+      if (v == null) return null;
+      if (v is int) return v;
+      if (v is String) return int.tryParse(v);
+      return null;
+    }
+
     return HistoryBooking(
       id: json['_id'],
       kodeBooking: json['kode_booking'],
       tanggalBooking: json['tanggal_booking'],
-      jamMulai: json['jam_mulai'],
-      jamSelesai: json['jam_selesai'],
+      jamMulai: _toInt(json['jam_mulai']),
+      jamSelesai: _toInt(json['jam_selesai']),
     );
   }
 }
@@ -212,10 +223,17 @@ class HistoryMeta {
   HistoryMeta({this.jamMulai, this.jamSelesai, this.totalHarga});
 
   factory HistoryMeta.fromJson(Map<String, dynamic> json) {
+    int? _toInt(dynamic v) {
+      if (v == null) return null;
+      if (v is int) return v;
+      if (v is String) return int.tryParse(v);
+      return null;
+    }
+
     return HistoryMeta(
-      jamMulai: json['jam_mulai'],
-      jamSelesai: json['jam_selesai'],
-      totalHarga: json['total_harga'],
+      jamMulai: _toInt(json['jam_mulai']),
+      jamSelesai: _toInt(json['jam_selesai']),
+      totalHarga: _toInt(json['total_harga']),
     );
   }
 }

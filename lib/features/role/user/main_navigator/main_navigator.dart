@@ -15,6 +15,11 @@ class _UserMainNavigatorState extends State<UserMainNavigator> {
   int _selectedIndex = 0;
   final AuthService _authService = AuthService();
   String userName = '';
+  // Keep pages but allow refreshing History tab by replacing widget
+  final List<Widget> _pages = [
+    const UserLapanganPage(),
+    const UserHistoryTransaksiPage(),
+  ];
 
   @override
   void initState() {
@@ -31,23 +36,20 @@ class _UserMainNavigatorState extends State<UserMainNavigator> {
     }
   }
 
-  final List<Widget> _pages = [
-    const UserLapanganPage(),
-    const UserHistoryTransaksiPage(),
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      // When switching to History tab, replace it with a new key to trigger reload
+      if (index == 1) {
+        _pages[1] = UserHistoryTransaksiPage(key: UniqueKey());
+      }
     });
   }
 
   void _navigateToProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const UserProfilePage(),
-      ),
+      MaterialPageRoute(builder: (context) => const UserProfilePage()),
     );
   }
 
@@ -67,20 +69,14 @@ class _UserMainNavigatorState extends State<UserMainNavigator> {
           ),
         ],
       ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: _selectedIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.sports_tennis),
             label: 'Lapangan',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.green,
