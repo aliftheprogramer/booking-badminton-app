@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../dashboard/dashboard_page.dart';
 import '../lapangan/lapangan.dart';
 import '../history_transaksi/history_transaksi.dart';
 import '../profile/profile.dart';
@@ -32,6 +33,7 @@ class _AdminMainNavigatorState extends State<AdminMainNavigator> {
   }
 
   final List<Widget> _pages = [
+    const AdminDashboardPage(),
     const AdminLapanganPage(),
     const AdminHistoryTransaksiPage(),
   ];
@@ -45,9 +47,7 @@ class _AdminMainNavigatorState extends State<AdminMainNavigator> {
   void _navigateToProfile() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const AdminProfilePage(),
-      ),
+      MaterialPageRoute(builder: (context) => const AdminProfilePage()),
     );
   }
 
@@ -67,12 +67,13 @@ class _AdminMainNavigatorState extends State<AdminMainNavigator> {
           ),
         ],
       ),
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: _selectedIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.sports_tennis),
             label: 'Lapangan',
