@@ -141,10 +141,12 @@ class _DetailLapanganPageState extends State<DetailLapanganPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Detail Lapangan'),
-        backgroundColor: Colors.orange,
+        backgroundColor: const Color(0xFFC42F2F),
         foregroundColor: Colors.white,
+        elevation: 0,
         actions: [
           if (!_isDeleting) ...[
             IconButton(
@@ -180,7 +182,15 @@ class _DetailLapanganPageState extends State<DetailLapanganPage> {
                     children: [
                       // Header Card
                       Card(
-                        elevation: 3,
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(
+                            color: Colors.black.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -239,15 +249,15 @@ class _DetailLapanganPageState extends State<DetailLapanganPage> {
                                   Icon(
                                     Icons.attach_money,
                                     size: 24,
-                                    color: Colors.green[700],
+                                    color: const Color(0xFFC42F2F),
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
                                     '${_formatRupiah(_lapangan.hargaPerJam)}/jam',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.green[700],
+                                      color: Color(0xFFC42F2F),
                                     ),
                                   ),
                                 ],
@@ -277,31 +287,42 @@ class _DetailLapanganPageState extends State<DetailLapanganPage> {
                               return Container(
                                 margin: const EdgeInsets.only(right: 12),
                                 width: 300,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.network(
-                                    _lapangan.foto[index],
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        color: Colors.grey[300],
-                                        child: const Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.broken_image,
-                                              size: 48,
-                                              color: Colors.grey,
-                                            ),
-                                            SizedBox(height: 8),
-                                            Text(
-                                              'Gagal memuat gambar',
-                                              style: TextStyle(color: Colors.grey),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
+                                child: Card(
+                                  elevation: 0,
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    side: BorderSide(
+                                      color: Colors.black.withOpacity(0.15),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(24),
+                                    child: Image.network(
+                                      _lapangan.foto[index],
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          color: Colors.grey[300],
+                                          child: const Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.broken_image,
+                                                size: 48,
+                                                color: Colors.grey,
+                                              ),
+                                              SizedBox(height: 8),
+                                              Text(
+                                                'Gagal memuat gambar',
+                                                style: TextStyle(color: Colors.grey),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               );
@@ -313,7 +334,15 @@ class _DetailLapanganPageState extends State<DetailLapanganPage> {
 
                       // Information Card
                       Card(
-                        elevation: 2,
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(
+                            color: Colors.black.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -392,7 +421,11 @@ class _DetailLapanganPageState extends State<DetailLapanganPage> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.all(12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                elevation: 0,
                               ),
                             ),
                           ),
@@ -405,7 +438,11 @@ class _DetailLapanganPageState extends State<DetailLapanganPage> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.all(12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                elevation: 0,
                               ),
                             ),
                           ),
@@ -425,7 +462,7 @@ class _DetailLapanganPageState extends State<DetailLapanganPage> {
         Icon(
           icon,
           size: 20,
-          color: Colors.grey[600],
+          color: const Color(0xFFC42F2F),
         ),
         const SizedBox(width: 8),
         Text(

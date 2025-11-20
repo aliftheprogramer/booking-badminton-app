@@ -155,9 +155,10 @@ class _BookingPageState extends State<BookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Booking Lapangan'),
-        backgroundColor: Colors.green,
+        backgroundColor: const Color(0xFFC42F2F),
         foregroundColor: Colors.white,
       ),
       body: SingleChildScrollView(
@@ -169,6 +170,15 @@ class _BookingPageState extends State<BookingPage> {
             children: [
               // Lapangan Info Card
               Card(
+                elevation: 0,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  side: BorderSide(
+                    color: Colors.black.withOpacity(0.15),
+                    width: 1,
+                  ),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -191,7 +201,7 @@ class _BookingPageState extends State<BookingPage> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.green,
+                              color: const Color(0xFFC42F2F),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -353,8 +363,20 @@ class _BookingPageState extends State<BookingPage> {
               // Summary Card
               if (_jamMulai != null && _jamSelesai != null) ...[
                 Card(
-                  color: Colors.green[50],
-                  child: Padding(
+                  elevation: 0,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    side: BorderSide(
+                      color: Colors.black.withOpacity(0.15),
+                      width: 1,
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFC42F2F).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -412,12 +434,13 @@ class _BookingPageState extends State<BookingPage> {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _submitBooking,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: const Color(0xFFC42F2F),
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.all(20),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(50),
                     ),
+                    elevation: 0,
                   ),
                   child: _isLoading
                       ? const SizedBox(

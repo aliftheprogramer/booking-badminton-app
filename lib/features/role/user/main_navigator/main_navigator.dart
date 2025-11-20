@@ -58,9 +58,10 @@ class _UserMainNavigatorState extends State<UserMainNavigator> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Booking Badminton'),
-        backgroundColor: Colors.green,
+        backgroundColor: const Color(0xFFC42F2F),
         foregroundColor: Colors.white,
         automaticallyImplyLeading: false,
+        elevation: 0,
         actions: [
           IconButton(
             onPressed: _navigateToProfile,
@@ -79,7 +80,8 @@ class _UserMainNavigatorState extends State<UserMainNavigator> {
           BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green,
+        selectedItemColor: const Color(0xFFC42F2F),
+        elevation: 0,
         onTap: _onItemTapped,
       ),
     );

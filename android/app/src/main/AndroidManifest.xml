@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <application
-        android:label="booking_badminton_mobile"
+        android:label="BookBad"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

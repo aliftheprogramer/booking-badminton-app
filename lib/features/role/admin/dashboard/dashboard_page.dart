@@ -138,6 +138,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: _isLoading
@@ -171,15 +172,27 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 children: [
                   // Welcome Card
                   Card(
-                    color: Colors.orange[50],
-                    child: Padding(
+                    elevation: 0,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                      side: BorderSide(
+                        color: Colors.black.withOpacity(0.15),
+                        width: 1,
+                      ),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFC42F2F).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         children: [
                           Icon(
                             Icons.dashboard,
                             size: 40,
-                            color: Colors.orange[700],
+                            color: const Color(0xFFC42F2F),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
@@ -191,7 +204,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.orange[900],
+                                    color: Colors.grey[900],
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -199,7 +212,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                   'Ringkasan data booking badminton',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.orange[700],
+                                    color: Colors.grey[700],
                                   ),
                                 ),
                               ],
@@ -236,7 +249,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                         'Total Lapangan',
                         _totalLapangan.toString(),
                         Icons.sports_tennis,
-                        Colors.purple,
+                        const Color(0xFFC42F2F),
                       ),
                       _buildStatCard(
                         'Lapangan Aktif',
@@ -250,6 +263,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
                   // Chart Card
                   Card(
+                    elevation: 0,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                      side: BorderSide(
+                        color: Colors.black.withOpacity(0.15),
+                        width: 1,
+                      ),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -281,8 +303,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   // Maintenance Alert
                   if (_maintenanceLapangan > 0) ...[
                     Card(
-                      color: Colors.red[50],
-                      child: Padding(
+                      elevation: 0,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        side: BorderSide(
+                          color: Colors.black.withOpacity(0.15),
+                          width: 1,
+                        ),
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red[50],
+                          borderRadius: BorderRadius.circular(24),
+                        ),
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -384,8 +418,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   ),
                   const SizedBox(height: 12),
                   if (_recentBookings.isEmpty)
-                    const Card(
-                      child: Padding(
+                    Card(
+                      elevation: 0,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        side: BorderSide(
+                          color: Colors.black.withOpacity(0.15),
+                          width: 1,
+                        ),
+                      ),
+                      child: const Padding(
                         padding: EdgeInsets.all(16),
                         child: Text(
                           'Belum ada booking',
@@ -398,12 +441,22 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                     ..._recentBookings.map((item) {
                       return Card(
                         margin: const EdgeInsets.only(bottom: 12),
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(
+                            color: Colors.black.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
                         child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           leading: CircleAvatar(
-                            backgroundColor: Colors.orange[100],
+                            backgroundColor: const Color(0xFFC42F2F).withOpacity(0.1),
                             child: Icon(
                               Icons.person,
-                              color: Colors.orange[700],
+                              color: const Color(0xFFC42F2F),
                             ),
                           ),
                           title: Text(
@@ -451,11 +504,19 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     Color color,
   ) {
     return Card(
-      elevation: 3,
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(
+          color: Colors.black.withOpacity(0.15),
+          width: 1,
+        ),
+      ),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(24),
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -516,7 +577,7 @@ class BarChartPainter extends CustomPainter {
       paint.shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [Colors.orange[400]!, Colors.orange[700]!],
+        colors: [const Color(0xFFC42F2F).withOpacity(0.7), const Color(0xFFC42F2F)],
       ).createShader(rect);
 
       final roundedRect = RRect.fromRectAndRadius(

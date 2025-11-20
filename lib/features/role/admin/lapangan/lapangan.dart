@@ -96,6 +96,7 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: _isLoading
@@ -147,8 +148,13 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
                               icon: const Icon(Icons.add),
                               label: const Text('Tambah'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orange,
+                                backgroundColor: const Color(0xFFC42F2F),
                                 foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                elevation: 0,
                               ),
                             ),
                           ],
@@ -185,10 +191,18 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
                                   final lapangan = _lapanganList[index];
                                   return Card(
                                     margin: const EdgeInsets.only(bottom: 16),
-                                    elevation: 2,
+                                    elevation: 0,
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(24),
+                                      side: BorderSide(
+                                        color: Colors.black.withOpacity(0.15),
+                                        width: 1,
+                                      ),
+                                    ),
                                     child: InkWell(
                                       onTap: () => _navigateToDetailLapangan(lapangan),
-                                      borderRadius: BorderRadius.circular(4),
+                                      borderRadius: BorderRadius.circular(24),
                                       child: Padding(
                                         padding: const EdgeInsets.all(16),
                                         child: Column(
@@ -240,18 +254,18 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
                                             const SizedBox(height: 12),
                                             Row(
                                               children: [
-                                                Icon(
+                                                const Icon(
                                                   Icons.attach_money,
                                                   size: 20,
-                                                  color: Colors.green[700],
+                                                  color: Color(0xFFC42F2F),
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
                                                   '${_formatRupiah(lapangan.hargaPerJam)}/jam',
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,
-                                                    color: Colors.green[700],
+                                                    color: Color(0xFFC42F2F),
                                                   ),
                                                 ),
                                               ],
@@ -266,27 +280,38 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
                                                   itemBuilder: (context, photoIndex) {
                                                     return Container(
                                                       margin: const EdgeInsets.only(right: 8),
-                                                      child: ClipRRect(
-                                                        borderRadius: BorderRadius.circular(8),
-                                                        child: Image.network(
-                                                          lapangan.foto[photoIndex],
-                                                          width: 80,
-                                                          height: 80,
-                                                          fit: BoxFit.cover,
-                                                          errorBuilder: (context, error, stackTrace) {
-                                                            return Container(
-                                                              width: 80,
-                                                              height: 80,
-                                                              decoration: BoxDecoration(
-                                                                color: Colors.grey[300],
-                                                                borderRadius: BorderRadius.circular(8),
-                                                              ),
-                                                              child: const Icon(
-                                                                Icons.image_not_supported,
-                                                                color: Colors.grey,
-                                                              ),
-                                                            );
-                                                          },
+                                                      child: Card(
+                                                        elevation: 0,
+                                                        color: Colors.white,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(12),
+                                                          side: BorderSide(
+                                                            color: Colors.black.withOpacity(0.1),
+                                                            width: 1,
+                                                          ),
+                                                        ),
+                                                        child: ClipRRect(
+                                                          borderRadius: BorderRadius.circular(12),
+                                                          child: Image.network(
+                                                            lapangan.foto[photoIndex],
+                                                            width: 80,
+                                                            height: 80,
+                                                            fit: BoxFit.cover,
+                                                            errorBuilder: (context, error, stackTrace) {
+                                                              return Container(
+                                                                width: 80,
+                                                                height: 80,
+                                                                decoration: BoxDecoration(
+                                                                  color: Colors.grey[300],
+                                                                  borderRadius: BorderRadius.circular(12),
+                                                                ),
+                                                                child: const Icon(
+                                                                  Icons.image_not_supported,
+                                                                  color: Colors.grey,
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
                                                         ),
                                                       ),
                                                     );
@@ -299,13 +324,18 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
                                             Row(
                                               children: [
                                                 Expanded(
-                                                  child: OutlinedButton.icon(
+                                                  child: ElevatedButton.icon(
                                                     onPressed: () => _navigateToEditLapangan(lapangan),
                                                     icon: const Icon(Icons.edit, size: 16),
                                                     label: const Text('Edit'),
-                                                    style: OutlinedButton.styleFrom(
-                                                      foregroundColor: Colors.blue,
-                                                      side: const BorderSide(color: Colors.blue),
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Colors.blue,
+                                                      foregroundColor: Colors.white,
+                                                      padding: const EdgeInsets.all(12),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(50),
+                                                      ),
+                                                      elevation: 0,
                                                     ),
                                                   ),
                                                 ),
@@ -316,8 +346,13 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
                                                     icon: const Icon(Icons.visibility, size: 16),
                                                     label: const Text('Detail'),
                                                     style: ElevatedButton.styleFrom(
-                                                      backgroundColor: Colors.orange,
+                                                      backgroundColor: const Color(0xFFC42F2F),
                                                       foregroundColor: Colors.white,
+                                                      padding: const EdgeInsets.all(12),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(50),
+                                                      ),
+                                                      elevation: 0,
                                                     ),
                                                   ),
                                                 ),
@@ -336,11 +371,10 @@ class _AdminLapanganPageState extends State<AdminLapanganPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToAddLapangan,
-        backgroundColor: Colors.orange,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        backgroundColor: const Color(0xFFC42F2F),
+        foregroundColor: Colors.white,
+        elevation: 0,
+        child: const Icon(Icons.add),
       ),
     );
   }

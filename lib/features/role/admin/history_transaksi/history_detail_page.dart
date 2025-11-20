@@ -75,9 +75,14 @@ class AdminHistoryDetailPage extends StatelessWidget {
   }) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      elevation: 2,
+      elevation: 0,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(
+          color: Colors.black.withOpacity(0.15),
+          width: 1,
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -90,7 +95,7 @@ class AdminHistoryDetailPage extends StatelessWidget {
                   if (icon != null) ...[
                     Icon(
                       icon,
-                      color: color ?? Colors.orange[700],
+                      color: color ?? const Color(0xFFC42F2F),
                       size: 24,
                     ),
                     const SizedBox(width: 12),
@@ -101,7 +106,7 @@ class AdminHistoryDetailPage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: color ?? Colors.orange[700],
+                        color: color ?? const Color(0xFFC42F2F),
                       ),
                     ),
                   ),
@@ -131,7 +136,7 @@ class AdminHistoryDetailPage extends StatelessWidget {
           Icon(
             icon,
             size: 20,
-            color: Colors.grey[600],
+            color: const Color(0xFFC42F2F),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -168,10 +173,10 @@ class AdminHistoryDetailPage extends StatelessWidget {
     final actionColor = _getActionColor(item.action ?? '');
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Detail History Transaksi'),
-        backgroundColor: Colors.orange,
+        backgroundColor: const Color(0xFFC42F2F),
         foregroundColor: Colors.white,
         elevation: 0,
       ),
@@ -191,7 +196,7 @@ class AdminHistoryDetailPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: actionColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: actionColor.withOpacity(0.3),
                     ),

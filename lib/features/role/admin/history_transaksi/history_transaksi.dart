@@ -191,38 +191,10 @@ class _AdminHistoryTransaksiPageState extends State<AdminHistoryTransaksiPage> {
     }
   }
 
-  Widget _buildDetailRow(IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 16,
-          color: Colors.grey[600],
-        ),
-        const SizedBox(width: 8),
-        Text(
-          '$label: ',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: Column(
@@ -239,7 +211,15 @@ class _AdminHistoryTransaksiPageState extends State<AdminHistoryTransaksiPage> {
                       hintText: 'Cari berdasarkan nama, no HP, atau kode booking...',
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(color: Color(0xFFC42F2F)),
                       ),
                       suffixIcon: IconButton(
                         onPressed: _onSearchChanged,
@@ -256,10 +236,20 @@ class _AdminHistoryTransaksiPageState extends State<AdminHistoryTransaksiPage> {
                       Expanded(
                         child: DropdownButtonFormField<String>(
                           value: _selectedFilter,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             labelText: 'Filter Aksi',
-                            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            border: OutlineInputBorder(),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: Colors.grey.shade300),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Color(0xFFC42F2F)),
+                            ),
                           ),
                           items: _actionFilters.map((String filter) {
                             return DropdownMenuItem<String>(
@@ -274,9 +264,9 @@ class _AdminHistoryTransaksiPageState extends State<AdminHistoryTransaksiPage> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Colors.orange[50],
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.orange[200]!),
+                          color: const Color(0xFFC42F2F).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFC42F2F).withOpacity(0.3)),
                         ),
                         child: Column(
                           children: [
@@ -289,9 +279,9 @@ class _AdminHistoryTransaksiPageState extends State<AdminHistoryTransaksiPage> {
                             ),
                             Text(
                               _formatRupiah(_totalRevenue),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 10,
-                                color: Colors.orange[700],
+                                color: Color(0xFFC42F2F),
                               ),
                             ),
                           ],
@@ -378,7 +368,15 @@ class _AdminHistoryTransaksiPageState extends State<AdminHistoryTransaksiPage> {
                                   final item = _historyList[index];
                                   return Card(
                                     margin: const EdgeInsets.only(bottom: 12),
-                                    elevation: 2,
+                                    elevation: 0,
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(24),
+                                      side: BorderSide(
+                                        color: Colors.black.withOpacity(0.15),
+                                        width: 1,
+                                      ),
+                                    ),
                                     child: InkWell(
                                       onTap: () {
                                         Navigator.push(
@@ -390,7 +388,7 @@ class _AdminHistoryTransaksiPageState extends State<AdminHistoryTransaksiPage> {
                                           ),
                                         );
                                       },
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(24),
                                       child: Padding(
                                         padding: const EdgeInsets.all(16),
                                         child: Column(
@@ -510,6 +508,35 @@ class _AdminHistoryTransaksiPageState extends State<AdminHistoryTransaksiPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 16,
+          color: const Color(0xFFC42F2F),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          '$label: ',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

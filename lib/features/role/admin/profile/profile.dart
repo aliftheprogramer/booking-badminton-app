@@ -72,10 +72,12 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Admin Profile'),
-        backgroundColor: Colors.orange,
+        backgroundColor: const Color(0xFFC42F2F),
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -92,21 +94,30 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                     children: [
                       // Profile Header
                       Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(
+                            color: Colors.black.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             children: [
                               CircleAvatar(
                                 radius: 50,
-                                backgroundColor: Colors.orange[100],
+                                backgroundColor: const Color(0xFFC42F2F).withOpacity(0.1),
                                 child: Text(
                                   _userData!.nama.isNotEmpty 
                                       ? _userData!.nama[0].toUpperCase()
                                       : 'A',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 40,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.orange[700],
+                                    color: Color(0xFFC42F2F),
                                   ),
                                 ),
                               ),
@@ -126,7 +137,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.orange,
+                                  color: const Color(0xFFC42F2F),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Row(
@@ -157,6 +168,15 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
 
                       // Profile Information
                       Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(
+                            color: Colors.black.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
                         child: Column(
                           children: [
                             _buildProfileTile(
@@ -164,13 +184,13 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                               title: 'Nama Lengkap',
                               subtitle: _userData!.nama,
                             ),
-                            const Divider(height: 1),
+                            Divider(height: 1, color: Colors.grey.shade200),
                             _buildProfileTile(
                               icon: Icons.phone,
                               title: 'Nomor HP',
                               subtitle: _userData!.noHp,
                             ),
-                            const Divider(height: 1),
+                            Divider(height: 1, color: Colors.grey.shade200),
                             _buildProfileTile(
                               icon: Icons.verified_user,
                               title: 'Role',
@@ -183,6 +203,15 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
 
                       // Admin Features
                       Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(
+                            color: Colors.black.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
                         child: Column(
                           children: [
                             _buildProfileTile(
@@ -197,7 +226,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                                 );
                               },
                             ),
-                            const Divider(height: 1),
+                            Divider(height: 1, color: Colors.grey.shade200),
                             _buildProfileTile(
                               icon: Icons.analytics,
                               title: 'Laporan Transaksi',
@@ -217,6 +246,15 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
 
                       // App Information
                       Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(
+                            color: Colors.black.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
                         child: Column(
                           children: [
                             _buildProfileTile(
@@ -225,7 +263,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                               subtitle: 'Booking Badminton Admin v1.0.0',
                               showTrailing: false,
                             ),
-                            const Divider(height: 1),
+                            Divider(height: 1, color: Colors.grey.shade200),
                             _buildProfileTile(
                               icon: Icons.help,
                               title: 'Bantuan Admin',
@@ -251,10 +289,11 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.all(16),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(50),
                             ),
+                            elevation: 0,
                           ),
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -288,7 +327,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
     return ListTile(
       leading: Icon(
         icon,
-        color: Colors.orange[700],
+        color: const Color(0xFFC42F2F),
       ),
       title: Text(
         title,

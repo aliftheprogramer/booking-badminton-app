@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../core/models/models.dart';
 import '../../../../core/services/api_service.dart';
+import '../../../../core/services/image_service.dart';
+import '../../../../core/logger.dart';
 import 'booking_page.dart';
 
 class UserLapanganPage extends StatefulWidget {
@@ -31,6 +34,15 @@ class _UserLapanganPageState extends State<UserLapanganPage> {
 
       final lapanganList = await _lapanganService.getAllLapangan();
       
+      // Debug logging
+      AppLogger.i.i('Loaded ${lapanganList.length} lapangan');
+      for (final lap in lapanganList) {
+        AppLogger.i.i('Lapangan: ${lap.nama}, Foto count: ${lap.foto.length}');
+        for (final foto in lap.foto) {
+          AppLogger.i.i('  Foto URL: $foto');
+        }
+      }
+      
       setState(() {
         _lapanganList = lapanganList;
         _isLoading = false;
@@ -54,6 +66,7 @@ class _UserLapanganPageState extends State<UserLapanganPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: _isLoading
@@ -113,7 +126,15 @@ class _UserLapanganPageState extends State<UserLapanganPage> {
                           final lapangan = _lapanganList[index];
                           return Card(
                             margin: const EdgeInsets.only(bottom: 16),
-                            elevation: 2,
+                            elevation: 0,
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              side: BorderSide(
+                                color: Colors.black.withOpacity(0.15),
+                                width: 1,
+                              ),
+                            ),
                             child: InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -123,7 +144,7 @@ class _UserLapanganPageState extends State<UserLapanganPage> {
                                   ),
                                 );
                               },
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(24),
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Column(
@@ -175,18 +196,18 @@ class _UserLapanganPageState extends State<UserLapanganPage> {
                                     const SizedBox(height: 12),
                                     Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.attach_money,
                                           size: 20,
-                                          color: Colors.green[700],
+                                          color: Color(0xFFC42F2F),
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
                                           '${_formatRupiah(lapangan.hargaPerJam)}/jam',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.green[700],
+                                            color: Color(0xFFC42F2F),
                                           ),
                                         ),
                                       ],
@@ -199,30 +220,16 @@ class _UserLapanganPageState extends State<UserLapanganPage> {
                                           scrollDirection: Axis.horizontal,
                                           itemCount: lapangan.foto.length,
                                           itemBuilder: (context, photoIndex) {
+                                            final imageUrl = lapangan.foto[photoIndex];
+                                            AppLogger.i.i('Loading image: $imageUrl');
                                             return Container(
                                               margin: const EdgeInsets.only(right: 8),
-                                              child: ClipRRect(
+                                              child: ImageService.buildNetworkImage(
+                                                imageUrl: imageUrl,
+                                                width: 80,
+                                                height: 80,
+                                                fit: BoxFit.cover,
                                                 borderRadius: BorderRadius.circular(8),
-                                                child: Image.network(
-                                                  lapangan.foto[photoIndex],
-                                                  width: 80,
-                                                  height: 80,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context, error, stackTrace) {
-                                                    return Container(
-                                                      width: 80,
-                                                      height: 80,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.grey[300],
-                                                        borderRadius: BorderRadius.circular(8),
-                                                      ),
-                                                      child: const Icon(
-                                                        Icons.image_not_supported,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
                                               ),
                                             );
                                           },
@@ -244,12 +251,13 @@ class _UserLapanganPageState extends State<UserLapanganPage> {
                                               }
                                             : null,
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green,
+                                          backgroundColor: const Color(0xFFC42F2F),
                                           foregroundColor: Colors.white,
-                                          padding: const EdgeInsets.symmetric(vertical: 12),
+                                          padding: const EdgeInsets.all(12),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(50),
                                           ),
+                                          elevation: 0,
                                         ),
                                         child: Text(
                                           lapangan.status == 'tersedia'

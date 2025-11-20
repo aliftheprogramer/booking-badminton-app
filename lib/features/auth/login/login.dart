@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Login berhasil! Selamat datang, ${response.nama}'),
-            backgroundColor: Colors.green,
+            backgroundColor: const Color(0xFFC42F2F),
           ),
         );
 
@@ -103,12 +103,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Login'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: Colors.black,
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Form(
@@ -122,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
               const Icon(
                 Icons.sports_tennis,
                 size: 80,
-                color: Colors.green,
+                color: Color(0xFFC42F2F),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -162,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.green),
+                    borderSide: const BorderSide(color: Color(0xFFC42F2F)),
                   ),
                 ),
                 validator: (value) {
@@ -204,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: Colors.green),
+                    borderSide: const BorderSide(color: Color(0xFFC42F2F)),
                   ),
                 ),
                 validator: (value) {
@@ -223,13 +217,14 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _login,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: const Color(0xFFC42F2F),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(50),
                   ),
                   elevation: 0,
+                  minimumSize: const Size(double.infinity, 56),
                 ),
                 child: _isLoading
                     ? const SizedBox(
@@ -270,7 +265,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: const Text(
                       'Daftar di sini',
                       style: TextStyle(
-                        color: Colors.green,
+                        color: Color(0xFFC42F2F),
                         fontWeight: FontWeight.bold,
                       ),
                     ),

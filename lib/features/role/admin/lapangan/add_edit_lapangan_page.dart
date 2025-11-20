@@ -147,10 +147,12 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(_isEditing ? 'Edit Lapangan' : 'Tambah Lapangan'),
-        backgroundColor: Colors.orange,
+        backgroundColor: const Color(0xFFC42F2F),
         foregroundColor: Colors.white,
+        elevation: 0,
         actions: [
           if (!_isLoading)
             TextButton(
@@ -175,8 +177,20 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
               // Header Info
               if (_isEditing) ...[
                 Card(
-                  color: Colors.orange[50],
-                  child: Padding(
+                  elevation: 0,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    side: BorderSide(
+                      color: Colors.black.withOpacity(0.15),
+                      width: 1,
+                    ),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFC42F2F).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,10 +220,20 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
               // Form Fields
               TextFormField(
                 controller: _namaController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Nama Lapangan',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.sports_tennis),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFC42F2F)),
+                  ),
+                  prefixIcon: const Icon(Icons.sports_tennis),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -222,10 +246,20 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
 
               TextFormField(
                 controller: _deskripsiController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Deskripsi',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.description),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFC42F2F)),
+                  ),
+                  prefixIcon: const Icon(Icons.description),
                 ),
                 maxLines: 3,
                 validator: (value) {
@@ -239,10 +273,20 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
 
               TextFormField(
                 controller: _hargaController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Harga per Jam',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.attach_money),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFC42F2F)),
+                  ),
+                  prefixIcon: const Icon(Icons.attach_money),
                   suffixText: 'Rp',
                 ),
                 keyboardType: TextInputType.number,
@@ -262,10 +306,19 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
               const SizedBox(height: 16),
 
               // Image picker
-              OutlinedButton.icon(
+              ElevatedButton.icon(
                 onPressed: _isLoading ? null : _pickImage,
                 icon: const Icon(Icons.photo_library),
                 label: const Text('Pilih Foto dari Galeri'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFC42F2F),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.all(12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  elevation: 0,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
@@ -278,10 +331,20 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
 
               DropdownButtonFormField<String>(
                 value: _status,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Status',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.check_circle),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFFC42F2F)),
+                  ),
+                  prefixIcon: const Icon(Icons.check_circle),
                 ),
                 items: const [
                   DropdownMenuItem(
@@ -327,12 +390,13 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _submitForm,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
+                  backgroundColor: const Color(0xFFC42F2F),
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.all(16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(50),
                   ),
+                  elevation: 0,
                 ),
                 child: _isLoading
                     ? const SizedBox(
@@ -363,16 +427,22 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Container(
-                  height: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey[300]!),
+                Card(
+                  elevation: 0,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    side: BorderSide(
+                      color: Colors.black.withOpacity(0.15),
+                      width: 1,
+                    ),
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-          child: _pickedBytes != null
-            ? Image.memory(_pickedBytes!, fit: BoxFit.cover)
+                    borderRadius: BorderRadius.circular(24),
+                    child: Container(
+                      height: 200,
+                      child: _pickedBytes != null
+                        ? Image.memory(_pickedBytes!, fit: BoxFit.cover)
                         : Image.network(
                             _fotoController.text,
                             fit: BoxFit.cover,
@@ -399,6 +469,7 @@ class _AddEditLapanganPageState extends State<AddEditLapanganPage> {
                               );
                             },
                           ),
+                    ),
                   ),
                 ),
               ],

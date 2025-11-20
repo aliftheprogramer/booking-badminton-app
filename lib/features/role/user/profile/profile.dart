@@ -72,10 +72,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Profile'),
-        backgroundColor: Colors.green,
+        backgroundColor: const Color(0xFFC42F2F),
         foregroundColor: Colors.white,
+        elevation: 0,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -92,21 +94,30 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     children: [
                       // Profile Header
                       Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(
+                            color: Colors.black.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Column(
                             children: [
                               CircleAvatar(
                                 radius: 50,
-                                backgroundColor: Colors.green[100],
+                                backgroundColor: const Color(0xFFC42F2F).withOpacity(0.1),
                                 child: Text(
                                   _userData!.nama.isNotEmpty 
                                       ? _userData!.nama[0].toUpperCase()
                                       : 'U',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 40,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.green[700],
+                                    color: Color(0xFFC42F2F),
                                   ),
                                 ),
                               ),
@@ -126,7 +137,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Colors.green,
+                                  color: const Color(0xFFC42F2F),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Text(
@@ -146,6 +157,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
                       // Profile Information
                       Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(
+                            color: Colors.black.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
                         child: Column(
                           children: [
                             _buildProfileTile(
@@ -153,13 +173,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               title: 'Nama Lengkap',
                               subtitle: _userData!.nama,
                             ),
-                            const Divider(height: 1),
+                            Divider(height: 1, color: Colors.grey.shade200),
                             _buildProfileTile(
                               icon: Icons.phone,
                               title: 'Nomor HP',
                               subtitle: _userData!.noHp,
                             ),
-                            const Divider(height: 1),
+                            Divider(height: 1, color: Colors.grey.shade200),
                             _buildProfileTile(
                               icon: Icons.verified_user,
                               title: 'Role',
@@ -172,6 +192,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
                       // App Information
                       Card(
+                        elevation: 0,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          side: BorderSide(
+                            color: Colors.black.withOpacity(0.15),
+                            width: 1,
+                          ),
+                        ),
                         child: Column(
                           children: [
                             _buildProfileTile(
@@ -180,7 +209,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               subtitle: 'Booking Badminton v1.0.0',
                               showTrailing: false,
                             ),
-                            const Divider(height: 1),
+                            Divider(height: 1, color: Colors.grey.shade200),
                             _buildProfileTile(
                               icon: Icons.help,
                               title: 'Bantuan',
@@ -206,10 +235,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.all(16),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(50),
                             ),
+                            elevation: 0,
                           ),
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -243,7 +273,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return ListTile(
       leading: Icon(
         icon,
-        color: Colors.green[700],
+        color: const Color(0xFFC42F2F),
       ),
       title: Text(
         title,

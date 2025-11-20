@@ -77,6 +77,7 @@ class _UserHistoryTransaksiPageState extends State<UserHistoryTransaksiPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: _refreshData,
         child: _isLoading
@@ -138,7 +139,15 @@ class _UserHistoryTransaksiPageState extends State<UserHistoryTransaksiPage> {
                           final meta = item.meta;
                           return Card(
                             margin: const EdgeInsets.only(bottom: 16),
-                            elevation: 2,
+                            elevation: 0,
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(24),
+                              side: BorderSide(
+                                color: Colors.black.withOpacity(0.15),
+                                width: 1,
+                              ),
+                            ),
                             child: InkWell(
                               onTap: booking == null
                                   ? null
@@ -165,7 +174,7 @@ class _UserHistoryTransaksiPageState extends State<UserHistoryTransaksiPage> {
                                         ),
                                       );
                                     },
-                              borderRadius: BorderRadius.circular(4),
+                              borderRadius: BorderRadius.circular(24),
                               child: Padding(
                               padding: const EdgeInsets.all(16),
                               child: Column(

@@ -56,9 +56,10 @@ class _AdminMainNavigatorState extends State<AdminMainNavigator> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Panel'),
-        backgroundColor: Colors.orange,
+        backgroundColor: const Color(0xFFC42F2F),
         foregroundColor: Colors.white,
         automaticallyImplyLeading: false,
+        elevation: 0,
         actions: [
           IconButton(
             onPressed: _navigateToProfile,
@@ -84,7 +85,8 @@ class _AdminMainNavigatorState extends State<AdminMainNavigator> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.orange,
+        selectedItemColor: const Color(0xFFC42F2F),
+        elevation: 0,
         onTap: _onItemTapped,
       ),
     );
